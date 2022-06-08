@@ -12,10 +12,10 @@ namespace Project3D
 
         private Vector3[] _theme;
 
-        private Matrix4 _view = Matrix4.CreateTranslation(0f, 0f, -4f);
-        private Matrix4 _projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60f), 16f / 9f, 2.5f, 5.5f);
+        private Matrix4d _view = Matrix4d.Identity;
+        private Matrix4d _projection = Matrix4d.CreateOrthographic(16f / 9f * 5.0f, 5.0f, -1.0f, 1.0f);
 
-        private Vector3 _lightDir = Vector3.Normalize(new Vector3(-1f, -0.5f, -0.5f));
+        private Vector3d _lightDir = Vector3d.Normalize(new Vector3(-1f, -0.5f, -0.5f));
 
         public Renderer(Node rootNode, Vector3[] theme, PrefabObject transformObj)
         {
@@ -27,17 +27,17 @@ namespace Project3D
         public void Render(Prefab prefab, List<PrefabObject> objects, float time)
         {
             int index = 0;
-            RecursivelyRenderScene(prefab, _rootNode, Matrix4.Identity, objects, time, objects.Count == 0, ref index);
+            RecursivelyRenderScene(prefab, _rootNode, Matrix4d.Identity, objects, time, objects.Count == 0, ref index);
         }
 
-        private void RecursivelyRenderScene(Prefab prefab, Node node, Matrix4 parentTransform, List<PrefabObject> objects, float time, bool createNew, ref int index)
+        private void RecursivelyRenderScene(Prefab prefab, Node node, Matrix4d parentTransform, List<PrefabObject> objects, float time, bool createNew, ref int index)
         {
-            Matrix4 local =
-                Matrix4.CreateScale(node.Scale) *
-                Matrix4.CreateFromQuaternion(node.Rotation) *
-                Matrix4.CreateTranslation(node.Position);
+            Matrix4d local =
+                Matrix4d.Scale(node.Scale) *
+                Matrix4d.CreateFromQuaternion(node.Rotation) *
+                Matrix4d.CreateTranslation(node.Position);
 
-            Matrix4 model = local * parentTransform;
+            Matrix4d model = local * parentTransform;
 
             if (node.Vertices != null && node.Indices != null)
             {
@@ -79,14 +79,14 @@ namespace Project3D
                     prefabObject.Events.PositionKeyframes.Add(new PrefabObject.ObjectEvents.PositionKeyframe()
                     {
                         Time = time,
-                        Value = new System.Numerics.Vector2(triangle.Position.X, triangle.Position.Y),
+                        Value = new System.Numerics.Vector2((float)triangle.Position.X, (float)triangle.Position.Y),
                         Easing = PrefabObjectEasing.Instant
                     });
 
                     prefabObject.Events.ScaleKeyframes.Add(new PrefabObject.ObjectEvents.ScaleKeyframe()
                     {
                         Time = time,
-                        Value = new System.Numerics.Vector2(triangle.Scale.X, triangle.Scale.Y),
+                        Value = new System.Numerics.Vector2((float)triangle.Scale.X, (float)triangle.Scale.Y),
                         Easing = PrefabObjectEasing.Instant
                     });
 
@@ -99,7 +99,7 @@ namespace Project3D
                     rotKfs.Add(new PrefabObject.ObjectEvents.RotationKeyframe()
                     {
                         Time = time,
-                        Value = MathHelper.RadiansToDegrees(triangle.Rotation) - lastRot,
+                        Value = (float)(MathHelper.RadiansToDegrees(triangle.Rotation) - lastRot),
                         Easing = PrefabObjectEasing.Instant
                     });
 
@@ -136,30 +136,30 @@ namespace Project3D
                 VertexOutData vsOut3 = vs3.ProcessVertex();
 
                 //get output positions from vertex shaders
-                Vector4 pos1 = vsOut1.Position;
-                Vector4 pos2 = vsOut2.Position;
-                Vector4 pos3 = vsOut3.Position;
+                Vector4d pos1 = vsOut1.Position;
+                Vector4d pos2 = vsOut2.Position;
+                Vector4d pos3 = vsOut3.Position;
 
                 //perspective divide
-                Vector3 ssPos1 = pos1.Xyz / pos1.W;
-                Vector3 ssPos2 = pos2.Xyz / pos2.W;
-                Vector3 ssPos3 = pos3.Xyz / pos3.W;
+                Vector3d ssPos1 = pos1.Xyz / pos1.W;
+                Vector3d ssPos2 = pos2.Xyz / pos2.W;
+                Vector3d ssPos3 = pos3.Xyz / pos3.W;
 
                 //calculate averages
-                float avgDepth = (ssPos1.Z + ssPos2.Z + ssPos3.Z) / 3f;
+                double avgDepth = (ssPos1.Z + ssPos2.Z + ssPos3.Z) / 3f;
                 Vector3 avgColor = (vsOut1.Color + vsOut2.Color + vsOut3.Color) / 3f;
 
                 Triangle triangle = new Triangle(
-                    new Vector2(ssPos1.X, ssPos1.Y),
-                    new Vector2(ssPos2.X, ssPos2.Y),
-                    new Vector2(ssPos3.X, ssPos3.Y));
+                    new Vector2d(ssPos1.X, ssPos1.Y),
+                    new Vector2d(ssPos2.X, ssPos2.Y),
+                    new Vector2d(ssPos3.X, ssPos3.Y));
 
                 //convert to right triangles
                 triangle.ToRightAngledTriangles(out Triangle rTri1, out Triangle rTri2);
 
                 //convert to pa transform
-                rTri1.GetPositionScaleRotation(out var rPos1, out var sca1, out float rot1);
-                rTri2.GetPositionScaleRotation(out var rPos2, out var sca2, out float rot2);
+                rTri1.GetPositionScaleRotation(out var rPos1, out var sca1, out var rot1);
+                rTri2.GetPositionScaleRotation(out var rPos2, out var sca2, out var rot2);
 
                 int paCol = GetThemeColorIndex(avgColor);
                 int paDepth = GetIntDepth(avgDepth);
@@ -187,7 +187,7 @@ namespace Project3D
             return triangles;
         }
 
-        private int GetIntDepth(float depthFloat)
+        private int GetIntDepth(double depthFloat)
         {
             return (int)(depthFloat * 64f);
         }

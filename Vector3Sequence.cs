@@ -4,17 +4,17 @@ namespace Project3D
 {
     public class Vector3Sequence
     {
-        private Keyframe<Vector3>[] _keyframes;
+        private Keyframe<Vector3d>[] _keyframes;
 
         private float lastTime;
         private int lastIndex;
 
-        public Vector3Sequence(Keyframe<Vector3>[] keyframes)
+        public Vector3Sequence(Keyframe<Vector3d>[] keyframes)
         {
             _keyframes = keyframes;
         }
 
-        public Vector3 GetValue(float time)
+        public Vector3d GetValue(float time)
         {
             if (_keyframes.Length == 1)
             {
@@ -31,12 +31,12 @@ namespace Project3D
                 return _keyframes[_keyframes.Length - 1].Value;
             }
 
-            FindClosestPair(time, out Keyframe<Vector3> start, out Keyframe<Vector3> end);
+            FindClosestPair(time, out Keyframe<Vector3d> start, out Keyframe<Vector3d> end);
 
-            return Vector3.Lerp(start.Value, end.Value, (time - start.Time) / (end.Time - start.Time));
+            return Vector3d.Lerp(start.Value, end.Value, (time - start.Time) / (end.Time - start.Time));
         }
 
-        private void FindClosestPair(float time, out Keyframe<Vector3> start, out Keyframe<Vector3> end)
+        private void FindClosestPair(float time, out Keyframe<Vector3d> start, out Keyframe<Vector3d> end)
         {
             if (time >= lastTime)
             {

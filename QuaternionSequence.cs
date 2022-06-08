@@ -4,17 +4,17 @@ namespace Project3D
 {
     public class QuaternionSequence
     {
-        private Keyframe<Quaternion>[] _keyframes;
+        private Keyframe<Quaterniond>[] _keyframes;
 
         private float lastTime;
         private int lastIndex;
 
-        public QuaternionSequence(Keyframe<Quaternion>[] keyframes)
+        public QuaternionSequence(Keyframe<Quaterniond>[] keyframes)
         {
             _keyframes = keyframes;
         }
 
-        public Quaternion GetValue(float time)
+        public Quaterniond GetValue(float time)
         {
             if (_keyframes.Length == 1)
             {
@@ -31,12 +31,12 @@ namespace Project3D
                 return _keyframes[_keyframes.Length - 1].Value;
             }
 
-            FindClosestPair(time, out Keyframe<Quaternion> start, out Keyframe<Quaternion> end);
+            FindClosestPair(time, out Keyframe<Quaterniond> start, out Keyframe<Quaterniond> end);
 
-            return Quaternion.Slerp(start.Value, end.Value, (time - start.Time) / (end.Time - start.Time));
+            return Quaterniond.Slerp(start.Value, end.Value, (time - start.Time) / (end.Time - start.Time));
         }
 
-        private void FindClosestPair(float time, out Keyframe<Quaternion> start, out Keyframe<Quaternion> end)
+        private void FindClosestPair(float time, out Keyframe<Quaterniond> start, out Keyframe<Quaterniond> end)
         {
             if (time >= lastTime)
             {

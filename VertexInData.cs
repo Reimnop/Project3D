@@ -4,9 +4,9 @@ namespace Project3D
 {
     public struct VertexInData
     {
-        public Matrix4 Model;
-        public Matrix4 ModelViewProjection;
-        public Vector3 LightDirection;
+        public Matrix4d Model;
+        public Matrix4d ModelViewProjection;
+        public Vector3d LightDirection;
         public Vector3 Color;
     }
 }

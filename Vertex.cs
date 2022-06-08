@@ -4,7 +4,7 @@ namespace Project3D
 {
     public struct Vertex
     {
-        public Vector3 Position;
-        public Vector3 Normal;
+        public Vector3d Position;
+        public Vector3d Normal;
     }
 }

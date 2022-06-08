@@ -1,9 +1,10 @@
-﻿using OpenTK.Mathematics;
-using PAPrefabToolkit;
+﻿using PAPrefabToolkit;
 using PAPrefabToolkit.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
+using Vector3 = OpenTK.Mathematics.Vector3;
 
 namespace Project3D
 {
@@ -15,16 +16,11 @@ namespace Project3D
         {
             Node node;
 
-            using (AssetImporter importer = new AssetImporter("Ench-animated.dae"))
+            using (AssetImporter importer = new AssetImporter("hk.dae"))
             {
                 node = importer.LoadModel();
             }
-
-            node.Scale = new Vector3(0.35f);
-
-            Quaternion origRot = node.Rotation;
-            node.Rotation = Quaternion.FromAxisAngle(Vector3.UnitY, 0.4f) * origRot;
-
+            
             Prefab prefab = new Prefab("3d-testing", PrefabType.Misc_1);
 
             PrefabObject transform = new PrefabObject(prefab, "Transform")
@@ -32,26 +28,23 @@ namespace Project3D
                 ObjectType = PrefabObjectType.Empty
             };
 
-            transform.Events.ScaleKeyframes.Add(new PrefabObject.ObjectEvents.ScaleKeyframe()
+            transform.Events.ScaleKeyframes.Add(new PrefabObject.ObjectEvents.ScaleKeyframe
             {
-                Value = new System.Numerics.Vector2(71.1111111111f, 40f)
+                Value = new Vector2(71.1111111111f, 40f) / 1.5f * new Vector2(1.0f, -1.0f)
             });
 
-            Vector3[] theme = new Vector3[]
+            Vector3[] theme =
             {
-                new Vector3(0.48515f, 0.715694f, 0.737911f),
-                new Vector3(0.024f, 0.026f, 0.025f),
-                new Vector3(1f, 1f, 1f),
-                new Vector3(1f, 0.022f, 0.117f)
+                Vector3.One
             };
 
             Renderer renderer = new Renderer(node, theme, transform);
 
-            for (int i = 0; i < 48; i++)
+            for (int i = 0; i < 1; i++)
             {
                 float time = i / 24f;
                 
-                RecursivelyUpdateAnimation(time, node);
+                // RecursivelyUpdateAnimation(time, node);
                 renderer.Render(prefab, prefabObjects, time);
 
                 Console.WriteLine("rendering frame " + i);

@@ -12,7 +12,7 @@ namespace Project3D
         {
             return new VertexOutData
             {
-                Position = new Vector4(Vertex.Position, 1f) * VertexIn.ModelViewProjection,
+                Position = new Vector4d(Vertex.Position, 1f) * VertexIn.ModelViewProjection,
                 Color = VertexIn.Color
             };
         }

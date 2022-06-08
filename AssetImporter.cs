@@ -54,9 +54,9 @@ namespace Project3D
             node.Transform.Decompose(out var scale, out var rotation, out var translation);
 
             Node pNode = new Node();
-            pNode.Position = new Vector3(translation.X, translation.Y, translation.Z);
-            pNode.Scale = new Vector3(scale.X, scale.Y, scale.Z);
-            pNode.Rotation = new OpenTK.Mathematics.Quaternion(rotation.X, rotation.Y, rotation.Z, rotation.W);
+            pNode.Position = new Vector3d(translation.X, translation.Y, translation.Z);
+            pNode.Scale = new Vector3d(scale.X, scale.Y, scale.Z);
+            pNode.Rotation = new Quaterniond(rotation.X, rotation.Y, rotation.Z, rotation.W);
 
             //convert assimp animations
             if (_animLookup.TryGetValue(node.Name, out AnimChannelPair animChannelPair))
@@ -66,13 +66,13 @@ namespace Project3D
 
                 if (animationChannel.HasPositionKeys)
                 {
-                    Keyframe<Vector3>[] keyframes = new Keyframe<Vector3>[animationChannel.PositionKeyCount];
+                    Keyframe<Vector3d>[] keyframes = new Keyframe<Vector3d>[animationChannel.PositionKeyCount];
 
                     List<VectorKey> posKeys = animationChannel.PositionKeys;
 
                     for (int i = 0; i < keyframes.Length; i++)
                     {
-                        keyframes[i] = new Keyframe<Vector3>()
+                        keyframes[i] = new Keyframe<Vector3d>()
                         {
                             Time = (float)posKeys[i].Time / (float)animation.TicksPerSecond,
                             Value = new Vector3(posKeys[i].Value.X, posKeys[i].Value.Y, posKeys[i].Value.Z)
@@ -84,16 +84,16 @@ namespace Project3D
 
                 if (animationChannel.HasScalingKeys)
                 {
-                    Keyframe<Vector3>[] keyframes = new Keyframe<Vector3>[animationChannel.ScalingKeyCount];
+                    Keyframe<Vector3d>[] keyframes = new Keyframe<Vector3d>[animationChannel.ScalingKeyCount];
 
                     List<VectorKey> scaKeys = animationChannel.ScalingKeys;
 
                     for (int i = 0; i < keyframes.Length; i++)
                     {
-                        keyframes[i] = new Keyframe<Vector3>()
+                        keyframes[i] = new Keyframe<Vector3d>()
                         {
                             Time = (float)scaKeys[i].Time / (float)animation.TicksPerSecond,
-                            Value = new Vector3(scaKeys[i].Value.X, scaKeys[i].Value.Y, scaKeys[i].Value.Z)
+                            Value = new Vector3d(scaKeys[i].Value.X, scaKeys[i].Value.Y, scaKeys[i].Value.Z)
                         };
                     }
 
@@ -102,16 +102,16 @@ namespace Project3D
 
                 if (animationChannel.HasRotationKeys)
                 {
-                    Keyframe<OpenTK.Mathematics.Quaternion>[] keyframes = new Keyframe<OpenTK.Mathematics.Quaternion>[animationChannel.RotationKeyCount];
+                    Keyframe<Quaterniond>[] keyframes = new Keyframe<Quaterniond>[animationChannel.RotationKeyCount];
 
                     List<QuaternionKey> rotKeys = animationChannel.RotationKeys;
 
                     for (int i = 0; i < keyframes.Length; i++)
                     {
-                        keyframes[i] = new Keyframe<OpenTK.Mathematics.Quaternion>()
+                        keyframes[i] = new Keyframe<Quaterniond>()
                         {
                             Time = (float)rotKeys[i].Time / (float)animation.TicksPerSecond,
-                            Value = new OpenTK.Mathematics.Quaternion(rotKeys[i].Value.X, rotKeys[i].Value.Y, rotKeys[i].Value.Z, rotKeys[i].Value.W)
+                            Value = new Quaterniond(rotKeys[i].Value.X, rotKeys[i].Value.Y, rotKeys[i].Value.Z, rotKeys[i].Value.W)
                         };
                     }
 

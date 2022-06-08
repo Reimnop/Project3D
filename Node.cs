@@ -5,9 +5,9 @@ namespace Project3D
 {
     public class Node
     {
-        public Vector3 Position = Vector3.Zero;
-        public Vector3 Scale = Vector3.One;
-        public Quaternion Rotation = Quaternion.Identity;
+        public Vector3d Position = Vector3.Zero;
+        public Vector3d Scale = Vector3.One;
+        public Quaterniond Rotation = Quaterniond.Identity;
 
         public Vector3Sequence PositionSequence;
         public Vector3Sequence ScaleSequence;
