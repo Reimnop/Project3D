@@ -53,14 +53,8 @@ public class Sequence<T>
         {
             return keyframes[^1].Value;
         }
-        
-        // If current index is correct, just return interpolated value at current index
-        if (time >= keyframes[index].Time && time < keyframes[index + 1].Time)
-        {
-            return GetValueBetweenKeyframes(keyframes[index], keyframes[index + 1], time);
-        }
-        
-        // else find the correct index, then interpolate
+
+        // Find the correct index, then interpolate
         int step = time - lastTime >= 0 ? 1 : -1;
         lastTime = time;
 
